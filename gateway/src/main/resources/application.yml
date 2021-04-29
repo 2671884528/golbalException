@@ -1,0 +1,33 @@
+server:
+  port: 7001
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowCredentials: true
+            allowedOrigins: "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+      routes:
+        - id: provider
+          uri: lb://provider:8001
+          predicates:
+            - Path=/api/provider/**
+          filters:
+            - StripPrefix=1
+        - id: consume
+          uri: lb://consume:9001
+          predicates:
+            - Path=/api/consume/**
+          filters:
+            - StripPrefix=1
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://112.74.180.80:9000/eureka/
